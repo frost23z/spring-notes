@@ -1,0 +1,38 @@
+site_name: Spring Notes
+site_url: http://spring.zayedbinhasan.me/
+repo_url: https://github.com/frost23z/spring-notes
+
+theme:
+  name: material
+  logo: 'media/icon/logo.png'
+  favicon: 'media/icon/logo.png'
+  icon:
+    admonition:
+      info: octicons/alert-24
+  palette:
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode- exceptions.md
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
