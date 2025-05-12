@@ -31,8 +31,21 @@ theme:
       toggle:
         icon: material/brightness-4
         name: Switch to system preference
+  features:
+    - content.code.copy
+    - content.code.annotate 
 
 markdown_extensions:
   - admonition
   - pymdownx.details
+  - attr_list
+  - md_in_html
   - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight: # allows code highlighting
+      anchor_linenums: true # adds line numbers to code blocks
+      line_spans: __span # adds line spans to code blocks
+      pygments_lang_class: true # adds language class to code blocks
+  - pymdownx.inlinehilite # allows inline code highlighting
+  - pymdownx.snippets # allows code snippets

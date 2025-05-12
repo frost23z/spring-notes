@@ -39,6 +39,37 @@ Spring Framework is a powerful framework for building enterprise-grade Java appl
 
 ---
 
+## Core Concepts
+
+### IoC (Inversion of Control)
+- **Principle:** Transfers control of object creation and dependency management to a framework.
+- **Purpose:** Decouples tasks from implementation, improving modularity and testability.
+- **Example:** Spring manages object creation and lifecycle.
+
+### IoC Container
+- **Definition:** A framework component implementing IoC, managing object (bean) lifecycles and dependencies.
+- **Responsibilities:**
+    - Instantiate and configure beans.
+    - Manage bean lifecycles.
+- **Examples:** 
+    - `BeanFactory`: Basic IoC container providing simple functionality.
+    - `ApplicationContext`: Advanced container with additional features like AOP, event propagation and internationalization.
+
+### DI (Dependency Injection)
+- **Definition:** A design pattern to achieve IoC by injecting dependencies into objects.
+- **Types:**
+    1. **Constructor Injection:** Dependencies via constructor.
+    2. **Setter Injection:** Dependencies via setter methods.
+    3. **Field Injection:** Direct injection using `@Autowired` (less recommended).
+- **Purpose:** Reduces tight coupling, improving testability and maintainability.
+
+### Relationship Between IoC, IoC Container, and DI
+- **IoC** is the overarching principle.
+- The **IoC Container** is the implementation of IoC in Spring.
+- **DI** is the design pattern used by the IoC Container to achieve IoC.
+
+---
+
 ## Resources
 
 - [Official Spring Documentation](https://docs.spring.io/spring-framework/reference/spring-projects.html)
