@@ -1,38 +1,195 @@
 # Spring Framework Basics
 
-## Spring Configuration Methods
-
-Spring provides multiple ways to configure applications:
-
-1. **XML Configuration:**
-    - Uses XML files to define beans and their dependencies.
-    - Example: `<beans>`, `<bean>`, `<property>` tags.
-
-2. **Java-based Configuration:**
-    - Uses Java classes annotated with `@Configuration` and `@Bean`.
-
-3. **Annotation-based Configuration:**
-    - Uses annotations directly on classes and methods.
-    - Common annotations:
-        - `@Component`: Marks a class as a Spring-managed component.
-        - `@Autowired`: Injects dependencies automatically.
-        - `@ComponentScan`: Scans for components in specified packages.
-
-Each method can be used independently or combined based on project requirements.
-
 ## Spring Bean Lifecycle
 
 The lifecycle of a Spring bean is managed by the Spring container. The main stages are:
 
-1. **Instantiation:** The container creates an instance of the bean.
-2. **Populate Properties:** Dependencies are injected into the bean.
-3. **Set Bean Name:** If the bean implements `BeanNameAware`, `setBeanName()` is called.
-4. **Set Bean Factory:** If the bean implements `BeanFactoryAware`, `setBeanFactory()` is called.
-5. **Pre-Initialization:** `BeanPostProcessors` are applied before initialization.
-6. **Initialization:** The container calls `afterPropertiesSet()` (if `InitializingBean` is implemented) or a custom init method.
-7. **Post-Initialization:** `BeanPostProcessors` are applied after initialization.
-8. **Ready for Use:** The bean is now available for use.
-9. **Destruction:** The container calls `destroy()` (if `DisposableBean` is implemented) or a custom destroy method.
+???+ info "Spring Bean Lifecycle"
+
+    1. **Instantiation:** The container creates an instance of the bean.
+    2. **Populate Properties:** Dependencies are injected into the bean.
+    3. **Set Bean Name:** If the bean implements `BeanNameAware`, `setBeanName()` is called.
+    4. **Set Bean Factory:** If the bean implements `BeanFactoryAware`, `setBeanFactory()` is called.
+    5. **Pre-Initialization:** `BeanPostProcessors` are applied before initialization.
+    6. **Initialization:** The container calls `afterPropertiesSet()` (if `InitializingBean` is implemented) or a custom init method.
+    7. **Post-Initialization:** `BeanPostProcessors` are applied after initialization.
+    8. **Ready for Use:** The bean is now available for use.
+    9. **Destruction:** The container calls `destroy()` (if `DisposableBean` is implemented) or a custom destroy method.
+
+## Base Classes for Examples
+
+The following base classes are used across all examples in this document. Refer to these classes for context when reviewing the examples.
+
+???+ example
+
+    === "Processor.java"
+
+        ```java
+        package com.example;
+
+        public class Processor {
+            private String brand;
+            private String model;
+
+            public Processor() {}
+
+            public Processor(String brand, String model) {
+                this.brand = brand;
+                this.model = model;
+            }
+
+            public String getBrand() {
+                return brand;
+            }
+
+            public void setBrand(String brand) {
+                this.brand = brand;
+            }
+
+            public String getModel() {
+                return model;
+            }
+
+            public void setModel(String model) {
+                this.model = model;
+            }
+
+            public String getDetails() {
+                return brand + " " + model;
+            }
+        }
+        ```
+
+    === "Memory.java"
+
+        ```java
+        package com.example;
+
+        public class Memory {
+            private String type;
+            private int size;
+
+            public Memory() {}
+
+            public Memory(String type, int size) {
+                this.type = type;
+                this.size = size;
+            }
+
+            public String getType() {
+                return type;
+            }
+
+            public void setType(String type) {
+                this.type = type;
+            }
+
+            public int getSize() {
+                return size;
+            }
+
+            public void setSize(int size) {
+                this.size = size;
+            }
+
+            public String getDetails() {
+                return type + " " + size + "GB";
+            }
+        }
+        ```
+
+    === "Computer.java"
+
+        ```java
+        package com.example;
+
+        public class Computer {
+            private Processor processor;
+            private Memory memory;
+
+            public Computer() {}
+
+            public Computer(Processor processor, Memory memory) {
+                this.processor = processor;
+                this.memory = memory;
+            }
+
+            public Processor getProcessor() {
+                return processor;
+            }
+
+            public void setProcessor(Processor processor) {
+                this.processor = processor;
+            }
+
+            public Memory getMemory() {
+                return memory;
+            }
+
+            public void setMemory(Memory memory) {
+                this.memory = memory;
+            }
+
+            public void displaySpecs() {
+                System.out.println("Computer Specs:");
+                System.out.println("Processor: " + processor.getDetails());
+                System.out.println("Memory: " + memory.getDetails());
+            }
+        }
+        ```
+
+## Spring Configuration Methods
+
+Spring provides multiple ways to configure applications:
+
+???+ info "Spring Configuration"
+
+    === "XML Configuration"
+
+        - XML configuration is the traditional way of configuring Spring applications.
+        - It uses an XML file to define beans and their dependencies.
+        - XML files are usually placed in the `src/main/resources` directory.
+        - The XML file is loaded into the Spring context using `ClassPathXmlApplicationContext`.
+
+        ```xml
+        <?xml version="1.0" encoding="UTF-8"?>
+        <beans xmlns="http://www.springframework.org/schema/beans"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.springframework.org/schema/beans/spring-beans.xsd">
+            <!-- Define beans here -->
+        </beans>
+        ```
+
+    === "Java-based Configuration"
+
+        - Java-based configuration uses Java classes to define beans and their dependencies.
+        - It is more type-safe and allows for better refactoring.
+        - Java configuration classes are annotated with `@Configuration` and use `@Bean` to define beans.
+
+        ```java
+        package com.example;
+
+        @Configuration
+        public class AppConfig {
+            // Define beans here
+        }
+        ```
+
+    === "Annotation-based Configuration"
+
+        - Annotation-based configuration uses annotations to define beans and their dependencies.
+        - It is more concise and easier to read compared to XML configuration.
+        - Common annotations include `@Component`, `@Autowired`, and `@Configuration`.
+
+        ```java
+        package com.example;
+
+        @Configuration
+        @ComponentScan(basePackages = "com.example")
+        public class AppConfig {
+            // No need to define beans explicitly, Spring will scan for @Component annotations
+        }
+        ```
 
 ## Load the Spring Context
 
@@ -43,36 +200,42 @@ Spring context can be loaded in different ways:
     === "XML Configuration"
 
         ```java
-        import org.springframework.context.ApplicationContext;
-        import org.springframework.context.support.ClassPathXmlApplicationContext;
+        package com.example;
 
         ApplicationContext context = new ClassPathXmlApplicationContext("config_file_name.xml");
         ```
 
-    === "Java Configuration"
+    === "Java-based Configuration"
 
         ```java
-        import org.springframework.context.ApplicationContext;
-        import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+        package com.example;
 
         ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
         ```
 
-    === "Annotation Configuration"
+    === "Annotation-based Configuration"
 
         ```java
-        import org.springframework.context.ApplicationContext;
-        import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+        package com.example;
 
         ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
         ```
 
-        - Use `@ComponentScan` to specify the package to scan for components.
-        - Use `@EnableAspectJAutoProxy` to enable AspectJ support.
-        - Use `@EnableTransactionManagement` to enable transaction management.
-        - Use `@PropertySource` to load properties files.
-        - Use `@Import` to import other configuration classes.
-        - Use `@ImportResource` to import XML configuration files.
+    === "Getting Bean"
+
+        ```java
+        package com.example;
+
+        Computer computer = context.getBean("computer", Computer.class);
+        computer.displaySpecs(); // (1)!
+        ```
+
+        1.  
+            ```plaintext title="Output"
+            Computer Specs:
+            Processor: Intel Core i7
+            Memory: DDR4 16GB
+            ```
 
 ## Scope of Beans
 
@@ -86,27 +249,120 @@ Spring supports different bean scopes:
 6. **Application:** A single instance is created for the lifecycle of the application context.
 7. **WebSocket:** A new instance is created for each WebSocket session (web applications).
 
-## Setter Injection
+???+ example "Spring Bean Scopes"
 
-Setter injection is a way to inject dependencies into a Spring bean using setter methods. It allows for more flexibility and can be used to change the dependencies at runtime.
+    === "XML Configuration"
+
+        ```xml
+        <bean id="myBean" class="com.example.MyBean" scope="prototype"/>
+        ```
+
+    === "Java-based Configuration"
+
+        ```java
+        package com.example;
+
+        @Configuration
+        public class AppConfig {
+            @Bean
+            @Scope("prototype")
+            public MyBean myBean() {
+                return new MyBean();
+            }
+        }
+        ```
+
+    === "Annotation-based Configuration"
+
+        ```java
+        package com.example;
+
+        @Component
+        @Scope("prototype")
+        public class MyBean {
+        }
+        ```
+
+## Dependency Injection
+
+Spring supports multiple ways to inject dependencies into beans. The most common methods are:
+
+### Setter Injection
+
+Setter injection uses setter methods to inject dependencies into a bean. It is flexible and allows changing dependencies at runtime. Must have setter methods defined in the class.
 
 ???+ example
 
-    === "Class Definition"
+    === "XML Configuration"
+
+        ```xml
+        <bean id="processor" class="com.example.Processor">
+            <property name="brand" value="Intel"/>
+            <property name="model" value="Core i7"/>
+        </bean>
+        <bean id="memory" class="com.example.Memory">
+            <property name="type" value="DDR4"/>
+            <property name="size" value="16"/>
+        </bean>
+        <bean id="computer" class="com.example.Computer">
+            <property name="processor" ref="processor"/>
+            <property name="memory" ref="memory"/>
+        </bean>
+        ```
+
+    === "Java-based Configuration"
+
+        ```java
+        package com.example;
+
+        @Configuration
+        public class AppConfig {
+            @Bean
+            public Processor processor() {
+                Processor processor = new Processor();
+                processor.setBrand("Intel");
+                processor.setModel("Core i7");
+                return processor;
+            }
+
+            @Bean
+            public Memory memory() {
+                Memory memory = new Memory();
+                memory.setType("DDR4");
+                memory.setSize(16);
+                return memory;
+            }
+
+            @Bean
+            public Computer computer() {
+                Computer computer = new Computer();
+                computer.setProcessor(processor());
+                computer.setMemory(memory());
+                return computer;
+            }
+        }
+        ```
+
+    === "Annotation-based Configuration"
 
         === "Processor.java"
 
             ```java
+            package com.example;
+
+            @Component
             public class Processor {
                 private String brand;
                 private String model;
 
-                public void setModel(String model) {
-                    this.model = model;
-                }
-
+                @Value("Intel")
                 public void setBrand(String brand) {
                     this.brand = brand;
+                }
+
+                @Value("Core i7")
+                public void setModel(String model) {
+                    this.model = model;
                 }
 
                 public String getDetails() {
@@ -118,14 +374,19 @@ Setter injection is a way to inject dependencies into a Spring bean using setter
         === "Memory.java"
 
             ```java
+            package com.example;
+
+            @Component
             public class Memory {
                 private String type;
                 private int size;
 
+                @Value("DDR4")
                 public void setType(String type) {
                     this.type = type;
                 }
 
+                @Value("16")
                 public void setSize(int size) {
                     this.size = size;
                 }
@@ -135,18 +396,23 @@ Setter injection is a way to inject dependencies into a Spring bean using setter
                 }
             }
             ```
-
+        
         === "Computer.java"
 
             ```java
+            package com.example;
+
+            @Component
             public class Computer {
                 private Processor processor;
                 private Memory memory;
 
+                @Autowired
                 public void setProcessor(Processor processor) {
                     this.processor = processor;
                 }
 
+                @Autowired
                 public void setMemory(Memory memory) {
                     this.memory = memory;
                 }
@@ -159,293 +425,179 @@ Setter injection is a way to inject dependencies into a Spring bean using setter
             }
             ```
 
-    === "XML Configuration"
+### Constructor Injection
 
-        ```xml
-        <bean id="processor" class="fullpackage.Processor">
-            <property name="brand" value="Intel"/>
-            <property name="model" value="Core i7"/>
-        </bean>
-        <bean id="memory" class="fullpackage.Memory">
-            <property name="type" value="DDR4"/>
-            <property name="size" value="16"/>
-        </bean>
-        <bean id="computer" class="fullpackage.Computer">
-            <property name="processor" ref="processor"/>
-            <property name="memory" ref="memory"/>
-        </bean>
-        ```
-
-    === "Getting Bean"
-
-        ```java
-        Computer computer = context.getBean("computer", Computer.class);
-        computer.displaySpecs(); // (1)!
-        ```
-
-        1.  
-            ```plaintext title="Output"
-            Computer Specs:
-            Processor: Intel Core i7
-            Memory: DDR4 16GB
-            ```
-
-## Constructor Injection
-
-Constructor injection is a way to inject dependencies into a Spring bean using constructor parameters. It is useful when dependencies are mandatory for the bean to function and cannot be changed at runtime.
+Constructor injection uses constructor parameters to inject dependencies into a bean. It is useful when dependencies are mandatory and cannot be changed at runtime.
 
 ???+ example
 
-    === "Class Definition"
-
-        === "Processor.java"
-
-            ```java
-            public class Processor {
-                private String brand;
-                private String model;
-
-                public Processor(String brand, String model) {
-                    this.brand = brand;
-                    this.model = model;
-                }
-
-                public String getDetails() {
-                    return brand + " " + model;
-                }
-            }
-            ```
-
-        === "Memory.java"
-
-            ```java
-            public class Memory {
-                private String type;
-                private int size;
-
-                public Memory(String type, int size) {
-                    this.type = type;
-                    this.size = size;
-                }
-
-                public String getDetails() {
-                    return type + " " + size + "GB";
-                }
-            }
-            ```
-
-        === "Computer.java"
-
-            ```java
-            public class Computer {
-                private Processor processor;
-                private Memory memory;
-
-                public Computer(Processor processor, Memory memory) {
-                    this.processor = processor;
-                    this.memory = memory;
-                }
-
-                public void displaySpecs() {
-                    System.out.println("Computer Specs:");
-                    System.out.println("Processor: " + processor.getDetails());
-                    System.out.println("Memory: " + memory.getDetails());
-                }
-            }
-            ```
-
     === "XML Configuration"
 
-        - For constructor injection, use `<constructor-arg>` tags to specify the constructor arguments.
-        - The order of arguments must match the constructor's parameter list unless you use attributes  like:
-            - `index`: Specifies the position of the constructor argument explicitly.
-            - `type`: Specifies the data type of the constructor argument (useful when arguments have   **different types** and the sequence is not maintained).
-            - `name`: Specifies the name of the constructor argument. This requires the     `@ConstructorProperties` annotation in the constructor to map argument names.
-
         ```xml
-        <bean id="processor" class="fullpackage.Processor">
+        <bean id="processor" class="com.example.Processor">
             <constructor-arg value="Intel"/>
             <constructor-arg value="Core i7"/>
         </bean>
-        <bean id="memory" class="fullpackage.Memory">
+        <bean id="memory" class="com.example.Memory">
             <constructor-arg value="DDR4"/>
             <constructor-arg value="16"/>
         </bean>
-        <bean id="computer" class="fullpackage.Computer">
+        <bean id="computer" class="com.example.Computer">
             <constructor-arg ref="processor"/>
             <constructor-arg ref="memory"/>
         </bean>
         ```
 
-    === "Getting Bean"
+    === "Java-based Configuration"
 
         ```java
-        Computer computer = context.getBean("computer", Computer.class);
-        computer.displaySpecs(); // (1)!
+        package com.example;
+
+        @Configuration
+        public class AppConfig {
+            @Bean
+            public Processor processor() {
+                return new Processor("Intel", "Core i7");
+            }
+
+            @Bean
+            public Memory memory() {
+                return new Memory("DDR4", 16);
+            }
+
+            @Bean
+            public Computer computer() {
+                return new Computer(processor(), memory());
+            }
+        }
         ```
 
-        1.  
-            ```plaintext title="Output"
-            Computer Specs:
-            Processor: Intel Core i7
-            Memory: DDR4 16GB
-            ```
+    === "Annotation-based Configuration"
 
-## Autowiring
+        ```java
+        package com.example;
 
-Autowiring is a feature in Spring that allows the container to automatically resolve and inject dependencies into a bean. It reduces the need for explicit configuration.
+        @Component
+        public class Computer {
+            private final Processor processor;
+            private final Memory memory;
 
-### Autowiring Modes
+            @Autowired
+            public Computer(Processor processor, Memory memory) {
+                this.processor = processor;
+                this.memory = memory;
+            }
 
-1. **no (default):** No autowiring. Dependencies must be explicitly defined.
-2. **byName:** Autowires by matching the property name with a bean name.
-3. **byType:** Autowires by matching the property type with a bean type.
-4. **constructor:** Autowires by matching constructor parameters with bean types.
+            public void displaySpecs() {
+                System.out.println("Processor: " + processor.getDetails());
+                System.out.println("Memory: " + memory.getDetails());
+            }
+        }
+        ```
+
+### Field Injection
+
+Field injection uses annotations to inject dependencies directly into the fields of a bean. It is less verbose but can make testing and refactoring more difficult. It is generally not recommended for production code.
 
 ???+ example
 
-    === "Class Definition"
+    ```java
+    package com.example;
 
-        === "Processor.java"
+    @Component
+    public class Computer {
+        @Autowired
+        private Processor processor;
 
-            ```java
-            public class Processor {
-                private String brand;
-                private String model;
+        @Autowired
+        private Memory memory;
 
-                public void setBrand(String brand) {
-                    this.brand = brand;
-                }
+        public void displaySpecs() {
+            System.out.println("Processor: " + processor.getDetails());
+            System.out.println("Memory: " + memory.getDetails());
+        }
+    }
+    ```
 
-                public void setModel(String model) {
-                    this.model = model;
-                }
+### Autowiring
 
-                public String getDetails() {
-                    return brand + " " + model;
-                }
-            }
-            ```
+Autowiring automatically resolves and injects dependencies into a bean. It reduces the need for explicit configuration. There are several modes of autowiring:
 
-        === "Computer.java"
+1. **No Autowiring:** Default mode. No autowiring is performed.
+2. **By Type:** The container looks for a bean of the same type and injects it.
+3. **By Name:** The container looks for a bean with the same name as the property and injects it.
+4. **Constructor:** The container looks for a constructor with matching types and injects the dependencies.
+5. **By Type with Qualifier:** The container looks for a bean of the same type and uses the `@Qualifier` annotation to resolve ambiguity.
+6. **By Name with Qualifier:** The container looks for a bean with the same name as the property and uses the `@Qualifier` annotation to resolve ambiguity.
+7. **By Type with Primary:** The container looks for a bean of the same type and uses the `@Primary` annotation to resolve ambiguity.
+8. **By Name with Primary:** The container looks for a bean with the same name as the property and uses the `@Primary` annotation to resolve ambiguity.
+9. **By Type with Factory Method:** The container looks for a factory method that returns a bean of the same type and injects it.
+10. **By Name with Factory Method:** The container looks for a factory method that returns a bean with the same name as the property and injects it.
+11. **By Type with Factory Bean:** The container looks for a factory bean that returns a bean of the same type and injects it.
 
-            ```java
-            public class Computer {
-                private Processor processor;
-
-                public Processor getProcessor() {
-                    return processor;
-                }
-
-                public void setProcessor(Processor processor) {
-                    this.processor = processor;
-                }
-
-                public void displaySpecs() {
-                    System.out.println("Processor: " + processor.getDetails());
-                }
-            }
-            ```
+???+ example
 
     === "XML Configuration"
 
         ```xml
-        <bean id="processor" class="fullpackage.Processor">
+        <bean id="processor" class="com.example.Processor">
             <property name="brand" value="Intel"/>
             <property name="model" value="Core i7"/>
         </bean>
-
-        <bean id="memory" class="fullpackage.Memory">
+        <bean id="memory" class="com.example.Memory">
             <property name="type" value="DDR4"/>
             <property name="size" value="16"/>
         </bean>
-
-        <bean id="computer" class="fullpackage.Computer" autowire="byName"/>
+        <bean id="computer" class="com.example.Computer" autowire="byName"/>
         ```
 
-    === "Getting Bean"
+    === "Java-based Configuration"
 
         ```java
-        Computer computer = context.getBean("computer", Computer.class);
-        computer.displaySpecs(); // (1)!
-        ```
-
-        1.  
-            ```plaintext title="Output"
-            Processor: Intel Core i7
-            ```
-
-### Autowiring with Annotations
-
-Spring also supports autowiring using annotations like `@Autowired`.
-
-???+ example
-
-    === "Class Definition"
-
-        === "Processor.java"
-
-            ```java
-            import org.springframework.stereotype.Component;
-
-            @Component
-            public class Processor {
-                private String brand = "Intel";
-                private String model = "Core i7";
-
-                public String getDetails() {
-                    return brand + " " + model;
-                }
-            }
-            ```
-
-        === "Computer.java"
-
-            ```java
-            import org.springframework.beans.factory.annotation.Autowired;
-            import org.springframework.stereotype.Component;
-
-            @Component
-            public class Computer {
-                @Autowired
-                private Processor processor;
-
-                public void displaySpecs() {
-                    System.out.println("Processor: " + processor.getDetails());
-                }
-            }
-            ```
-
-    === "Java Configuration"
-
-        ```java
-        import org.springframework.context.ApplicationContext;
-        import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-        import org.springframework.context.annotation.ComponentScan;
-        import org.springframework.context.annotation.Configuration;
+        package com.example;
 
         @Configuration
-        @ComponentScan(basePackages = "fullpackage")
         public class AppConfig {
-        }
+            @Bean
+            public Processor processor() {
+                return new Processor("Intel", "Core i7");
+            }
 
-        public class Main {
-            public static void main(String[] args) {
-                ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
-                Computer computer = context.getBean(Computer.class);
-                computer.displaySpecs(); // (1)!
+            @Bean
+            public Memory memory() {
+                return new Memory("DDR4", 16);
+            }
+
+            @Bean
+            public Computer computer() {
+                return new Computer(processor(), memory());
             }
         }
         ```
 
-        1.  
-            ```plaintext title="Output"
-            Processor: Intel Core i7
-            ```
+    === "Annotation-based Configuration"
+
+        ```java
+        package com.example;
+
+        @Component
+        public class Computer {
+            @Autowired
+            private Processor processor;
+
+            @Autowired
+            private Memory memory;
+
+            public void displaySpecs() {
+                System.out.println("Processor: " + processor.getDetails());
+                System.out.println("Memory: " + memory.getDetails());
+            }
+        }
+        ```
 
 ## Using `Primary` to Resolve Bean Ambiguity
 
-When multiple beans of the same type are eligible for injection, the `@Primary` annotation or the `primary` attribute in XML can be used to mark one bean as the default choice.
+When multiple beans of the same type are eligible for injection you can explicitly use the bean name, in java based config Use `Qualifier` or use the `@Primary` annotation or the `primary` attribute in XML can be used to mark one bean as the default choice.
 
 ???+ example
 
@@ -454,6 +606,8 @@ When multiple beans of the same type are eligible for injection, the `@Primary` 
         === "Processor.java"
 
             ```java
+            package com.example;
+
             public class Processor {
                 private String brand;
                 private String model;
@@ -472,8 +626,7 @@ When multiple beans of the same type are eligible for injection, the `@Primary` 
         === "Computer.java"
 
             ```java
-            import org.springframework.beans.factory.annotation.Autowired;
-            import org.springframework.stereotype.Component;
+            package com.example;
 
             @Component
             public class Computer {
@@ -489,20 +642,22 @@ When multiple beans of the same type are eligible for injection, the `@Primary` 
     === "XML Configuration"
 
         ```xml
-        <bean id="intelProcessor" class="fullpackage.Processor">
+        <bean id="intelProcessor" class="com.example.Processor">
             <constructor-arg value="Intel"/>
             <constructor-arg value="Core i7"/>
         </bean>
 
-        <bean id="amdProcessor" class="fullpackage.Processor" primary="true">
+        <bean id="amdProcessor" class="com.example.Processor" primary="true">
             <constructor-arg value="AMD"/>
             <constructor-arg value="Ryzen 7"/>
         </bean>
         ```
 
-    === "Java Configuration"
+    === "Java-based Configuration"
 
         ```java
+        package com.example;
+
         @Configuration
         public class AppConfig {
             @Bean
@@ -517,6 +672,27 @@ When multiple beans of the same type are eligible for injection, the `@Primary` 
             }
         }
         ```
+    
+    === "Annotation-based Configuration"
+
+        ```java
+        package com.example;
+
+        @Component
+        public class Computer {
+            @Autowired
+            @Qualifier("amdProcessor") // specify the bean name to be injected
+            private Processor processor;
+
+            @Autowired
+            @Qualifier("memory") // specify the bean name to be injected
+            private Memory memory;
+
+            public void displaySpecs() {
+                System.out.println("Processor: " + processor.getDetails());
+            }
+        }
+        ```
 
 ## Inner Beans
 
@@ -524,76 +700,18 @@ Inner beans are beans defined within the `<property>` or `<constructor-arg>` tag
 
 ???+ example
 
-    === "Class Definition"
-
-        === "Processor.java"
-
-            ```java
-            public class Processor {
-                private String brand;
-                private String model;
-
-                public Processor(String brand, String model) {
-                    this.brand = brand;
-                    this.model = model;
-                }
-
-                public String getDetails() {
-                    return brand + " " + model;
-                }
-            }
-            ```
-
-        === "Memory.java"
-
-            ```java
-            public class Memory {
-                private String type;
-                private int size;
-
-                public Memory(String type, int size) {
-                    this.type = type;
-                    this.size = size;
-                }
-
-                public String getDetails() {
-                    return type + " " + size + "GB";
-                }
-            }
-            ```
-
-        === "Computer.java"
-
-            ```java
-            public class Computer {
-                private Processor processor;
-                private Memory memory;
-
-                public Computer(Processor processor, Memory memory) {
-                    this.processor = processor;
-                    this.memory = memory;
-                }
-
-                public void displaySpecs() {
-                    System.out.println("Computer Specs:");
-                    System.out.println("Processor: " + processor.getDetails());
-                    System.out.println("Memory: " + memory.getDetails());
-                }
-            }
-            ```
-
     === "XML Configuration"
 
         ```xml
-        <bean id="computer" class="fullpackage.Computer">
+        <bean id="computer" class="com.example.Computer">
             <constructor-arg>
-                <bean class="fullpackage.Processor">
+                <bean class="com.example.Processor">
                     <constructor-arg value="Intel"/>
                     <constructor-arg value="Core i7"/>
                 </bean>
             </constructor-arg>
             <constructor-arg>
-                <bean class="fullpackage.Memory">
+                <bean class="com.example.Memory">
                     <constructor-arg value="DDR4"/>
                     <constructor-arg value="16"/>
                 </bean>
@@ -601,16 +719,45 @@ Inner beans are beans defined within the `<property>` or `<constructor-arg>` tag
         </bean>
         ```
 
-    === "Getting Bean"
+    === "Java-based Configuration"
 
         ```java
-        Computer computer = context.getBean("computer", Computer.class);
-        computer.displaySpecs(); // (1)!
+        @Configuration
+        public class AppConfig {
+            @Bean
+            public Computer computer() {
+                return new Computer(
+                    new Processor("Intel", "Core i7"),
+                    new Memory("DDR4", 16)
+                );
+            }
+        }
         ```
 
-        1.  
-            ```plaintext title="Output"
-            Computer Specs:
-            Processor: Intel Core i7
-            Memory: DDR4 16GB
-            ```
+    === "Annotation-based Configuration"
+
+        ```java
+        package com.example;
+
+        @Component
+        public class Computer {
+            private Processor processor;
+            private Memory memory;
+
+            @Autowired
+            public void setProcessor(Processor processor) {
+                this.processor = processor;
+            }
+
+            @Autowired
+            public void setMemory(Memory memory) {
+                this.memory = memory;
+            }
+
+            public void displaySpecs() {
+                System.out.println("Computer Specs:");
+                System.out.println("Processor: " + processor.getDetails());
+                System.out.println("Memory: " + memory.getDetails());
+            }
+        }
+        ```
