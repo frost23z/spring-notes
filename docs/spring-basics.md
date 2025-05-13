@@ -25,8 +25,6 @@ The following base classes are used across all examples in this document. Refer 
     === "Processor.java"
 
         ```java
-        package com.example;
-
         public class Processor {
             private String brand;
             private String model;
@@ -63,8 +61,6 @@ The following base classes are used across all examples in this document. Refer 
     === "Memory.java"
 
         ```java
-        package com.example;
-
         public class Memory {
             private String type;
             private int size;
@@ -101,8 +97,6 @@ The following base classes are used across all examples in this document. Refer 
     === "Computer.java"
 
         ```java
-        package com.example;
-
         public class Computer {
             private Processor processor;
             private Memory memory;
@@ -167,8 +161,6 @@ Spring provides multiple ways to configure applications:
         - Java configuration classes are annotated with `@Configuration` and use `@Bean` to define beans.
 
         ```java
-        package com.example;
-
         @Configuration
         public class AppConfig {
             // Define beans here
@@ -182,8 +174,6 @@ Spring provides multiple ways to configure applications:
         - Common annotations include `@Component`, `@Autowired`, and `@Configuration`.
 
         ```java
-        package com.example;
-
         @Configuration
         @ComponentScan(basePackages = "com.example")
         public class AppConfig {
@@ -200,32 +190,24 @@ Spring context can be loaded in different ways:
     === "XML Configuration"
 
         ```java
-        package com.example;
-
         ApplicationContext context = new ClassPathXmlApplicationContext("config_file_name.xml");
         ```
 
     === "Java-based Configuration"
 
         ```java
-        package com.example;
-
         ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
         ```
 
     === "Annotation-based Configuration"
 
         ```java
-        package com.example;
-
         ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
         ```
 
     === "Getting Bean"
 
         ```java
-        package com.example;
-
         Computer computer = context.getBean("computer", Computer.class);
         computer.displaySpecs(); // (1)!
         ```
@@ -260,8 +242,6 @@ Spring supports different bean scopes:
     === "Java-based Configuration"
 
         ```java
-        package com.example;
-
         @Configuration
         public class AppConfig {
             @Bean
@@ -275,8 +255,6 @@ Spring supports different bean scopes:
     === "Annotation-based Configuration"
 
         ```java
-        package com.example;
-
         @Component
         @Scope("prototype")
         public class MyBean {
@@ -313,8 +291,6 @@ Setter injection uses setter methods to inject dependencies into a bean. It is f
     === "Java-based Configuration"
 
         ```java
-        package com.example;
-
         @Configuration
         public class AppConfig {
             @Bean
@@ -348,8 +324,6 @@ Setter injection uses setter methods to inject dependencies into a bean. It is f
         === "Processor.java"
 
             ```java
-            package com.example;
-
             @Component
             public class Processor {
                 private String brand;
@@ -374,8 +348,6 @@ Setter injection uses setter methods to inject dependencies into a bean. It is f
         === "Memory.java"
 
             ```java
-            package com.example;
-
             @Component
             public class Memory {
                 private String type;
@@ -400,8 +372,6 @@ Setter injection uses setter methods to inject dependencies into a bean. It is f
         === "Computer.java"
 
             ```java
-            package com.example;
-
             @Component
             public class Computer {
                 private Processor processor;
@@ -451,8 +421,6 @@ Constructor injection uses constructor parameters to inject dependencies into a 
     === "Java-based Configuration"
 
         ```java
-        package com.example;
-
         @Configuration
         public class AppConfig {
             @Bean
@@ -475,8 +443,6 @@ Constructor injection uses constructor parameters to inject dependencies into a 
     === "Annotation-based Configuration"
 
         ```java
-        package com.example;
-
         @Component
         public class Computer {
             private final Processor processor;
@@ -502,8 +468,6 @@ Field injection uses annotations to inject dependencies directly into the fields
 ???+ example
 
     ```java
-    package com.example;
-
     @Component
     public class Computer {
         @Autowired
@@ -554,8 +518,6 @@ Autowiring automatically resolves and injects dependencies into a bean. It reduc
     === "Java-based Configuration"
 
         ```java
-        package com.example;
-
         @Configuration
         public class AppConfig {
             @Bean
@@ -578,8 +540,6 @@ Autowiring automatically resolves and injects dependencies into a bean. It reduc
     === "Annotation-based Configuration"
 
         ```java
-        package com.example;
-
         @Component
         public class Computer {
             @Autowired
@@ -606,8 +566,6 @@ When multiple beans of the same type are eligible for injection you can explicit
         === "Processor.java"
 
             ```java
-            package com.example;
-
             public class Processor {
                 private String brand;
                 private String model;
@@ -626,8 +584,6 @@ When multiple beans of the same type are eligible for injection you can explicit
         === "Computer.java"
 
             ```java
-            package com.example;
-
             @Component
             public class Computer {
                 @Autowired
@@ -656,8 +612,6 @@ When multiple beans of the same type are eligible for injection you can explicit
     === "Java-based Configuration"
 
         ```java
-        package com.example;
-
         @Configuration
         public class AppConfig {
             @Bean
@@ -676,8 +630,6 @@ When multiple beans of the same type are eligible for injection you can explicit
     === "Annotation-based Configuration"
 
         ```java
-        package com.example;
-
         @Component
         public class Computer {
             @Autowired
@@ -737,8 +689,6 @@ Inner beans are beans defined within the `<property>` or `<constructor-arg>` tag
     === "Annotation-based Configuration"
 
         ```java
-        package com.example;
-
         @Component
         public class Computer {
             private Processor processor;
