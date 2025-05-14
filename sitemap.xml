@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>http://spring.zayedbinhasan.me/</loc>
+         <lastmod>2025-05-14</lastmod>
+    </url>
+    <url>
+         <loc>http://spring.zayedbinhasan.me/spring-basics/</loc>
+         <lastmod>2025-05-14</lastmod>
+    </url>
+    <url>
+         <loc>http://spring.zayedbinhasan.me/spring-jdbc/</loc>
+         <lastmod>2025-05-14</lastmod>
+    </url>
+    <url>
+         <loc>http://spring.zayedbinhasan.me/springboot/</loc>
+         <lastmod>2025-05-14</lastmod>
+    </url>
+</urlset>
